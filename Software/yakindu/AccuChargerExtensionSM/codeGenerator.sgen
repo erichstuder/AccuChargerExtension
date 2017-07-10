@@ -1,0 +1,67 @@
+GeneratorModel for yakindu::cpp {
+
+	statechart accuChargerExtensionSM {
+
+		// https://www.itemis.com/en/yakindu/statechart-tools/documentation/#generating-state-machine-code
+
+		feature Outlet {
+			targetProject = "AccuChargerExtensionSM"
+			targetFolder = "generated_code"
+//			libraryTargetFolder = "src"
+		}
+		
+//		feature LicenseHeader {
+//			licenseText = "Copyright (c) 2016 committers of YAKINDU and others."
+//		}
+		
+		feature FunctionInlining {
+		    inlineReactions      = true
+		    inlineEntryActions   = true
+		    inlineExitActions    = true
+		    inlineEnterSequences = true
+		    inlineExitSequences  = true
+		    inlineChoices        = true
+		    inlineEnterRegion    = true
+		    inlineExitRegion     = true
+		    inlineEntries        = true
+		}
+
+/*		feature FunctionInlining {
+		    inlineReactions      = false
+		    inlineEntryActions   = false
+		    inlineExitActions    = false
+		    inlineEnterSequences = false
+		    inlineExitSequences  = false
+		    inlineChoices        = false
+		    inlineEnterRegion    = false
+		    inlineExitRegion     = false
+		    inlineEntries        = false
+		}*/
+		
+//		feature Debug {
+//			dumpSexec = true
+//		}
+		
+		feature IdentifierSettings {
+			moduleName =  "StateMachine"
+			//statemachinePrefix =  "myStatechart"
+			maxIdentifierLength = 31 //sicher ist sicher
+			separator =  "_"
+		}
+
+//		feature Tracing { 
+//			enterState = true//wird nicht erkannt
+//			exitState  = true
+//		}
+
+		feature GeneratorOptions {
+			innerFunctionVisibility = "private"
+			staticOperationCallback = true //könnte den code wohl vereinfachen
+		}
+
+//		feature JUnitWrapper { //wird nicht erkannt
+//			WrapToJUnit =  "false"
+//		}
+
+	}
+}
