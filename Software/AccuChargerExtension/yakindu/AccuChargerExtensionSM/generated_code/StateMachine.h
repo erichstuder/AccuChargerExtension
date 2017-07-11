@@ -25,7 +25,7 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 			off,
 			charging,
 			endOfCharging,
-			preCharge,
+			charging_running,
 			AccuChargerExtensionSM_last_state
 		} AccuChargerExtensionSMStates;
 		
@@ -34,11 +34,20 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 		{
 			
 			public:
-				/*! Gets the value of the variable 'nrOfChargingPorts' that is defined in the default interface scope. */
-				sc_integer get_nrOfChargingPorts();
+				/*! Gets the value of the variable 'NrOfChargingPorts' that is defined in the default interface scope. */
+				const sc_integer get_nrOfChargingPorts();
 				
-				/*! Gets the value of the variable 'samplingTime_ms' that is defined in the default interface scope. */
-				sc_integer get_samplingTime_ms();
+				/*! Gets the value of the variable 'SamplingTime_ms' that is defined in the default interface scope. */
+				const sc_integer get_samplingTime_ms();
+				
+				/*! Gets the value of the variable 'AccuStateUndef' that is defined in the default interface scope. */
+				const sc_integer get_accuStateUndef();
+				
+				/*! Gets the value of the variable 'AccuStateFull' that is defined in the default interface scope. */
+				const sc_integer get_accuStateFull();
+				
+				/*! Gets the value of the variable 'AccuStateRun' that is defined in the default interface scope. */
+				const sc_integer get_accuStateRun();
 				
 				/*! Checks if the out event 'chargingPortEnable' that is defined in the default interface scope has been raised. */
 				sc_boolean isRaised_chargingPortEnable();
@@ -52,17 +61,11 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 				/*! Gets the value of the out event 'chargingPortDisable' that is defined in the default interface scope. */
 				sc_integer get_chargingPortDisable_value();
 				
-				/*! Checks if the out event 'chargedPortsUpdate' that is defined in the default interface scope has been raised. */
-				sc_boolean isRaised_chargedPortsUpdate();
+				/*! Checks if the out event 'accuStateUpdate' that is defined in the default interface scope has been raised. */
+				sc_boolean isRaised_accuStateUpdate();
 				
-				/*! Gets the value of the out event 'chargedPortsUpdate' that is defined in the default interface scope. */
-				sc_integer get_chargedPortsUpdate_value();
-				
-				/*! Checks if the out event 'preChargeUpdate' that is defined in the default interface scope has been raised. */
-				sc_boolean isRaised_preChargeUpdate();
-				
-				/*! Gets the value of the out event 'preChargeUpdate' that is defined in the default interface scope. */
-				sc_boolean get_preChargeUpdate_value();
+				/*! Gets the value of the out event 'accuStateUpdate' that is defined in the default interface scope. */
+				sc_integer get_accuStateUpdate_value();
 				
 				/*! Gets the value of the variable 'chargingCurrent_raw' that is defined in the default interface scope. */
 				sc_integer get_chargingCurrent_raw();
@@ -70,38 +73,45 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 				/*! Sets the value of the variable 'chargingCurrent_raw' that is defined in the default interface scope. */
 				void set_chargingCurrent_raw(sc_integer value);
 				
-				/*! Gets the value of the variable 'preChargeVoltage_raw' that is defined in the default interface scope. */
-				sc_integer get_preChargeVoltage_raw();
-				
-				/*! Sets the value of the variable 'preChargeVoltage_raw' that is defined in the default interface scope. */
-				void set_preChargeVoltage_raw(sc_integer value);
+				/*! Gets the value of the variable 'accuState' that is defined in the default interface scope. */
+				sc_integer get_accuState();
 				
 				
 			private:
 				friend class StateMachine;
-				sc_integer nrOfChargingPorts;
-				sc_integer samplingTime_ms;
+				static const sc_integer NrOfChargingPorts;
+				static const sc_integer SamplingTime_ms;
+				static const sc_integer AccuStateUndef;
+				static const sc_integer AccuStateFull;
+				static const sc_integer AccuStateRun;
 				sc_boolean chargingPortEnable_raised;
 				sc_integer chargingPortEnable_value;
 				sc_boolean chargingPortDisable_raised;
 				sc_integer chargingPortDisable_value;
-				sc_boolean chargedPortsUpdate_raised;
-				sc_integer chargedPortsUpdate_value;
-				sc_boolean preChargeUpdate_raised;
-				sc_boolean preChargeUpdate_value;
+				sc_boolean accuStateUpdate_raised;
+				sc_integer accuStateUpdate_value;
 				sc_integer chargingCurrent_raw;
-				sc_integer preChargeVoltage_raw;
+				sc_integer accuState;
 		};
 				
 		
 		/*! Returns an instance of the interface class 'DefaultSCI'. */
 		DefaultSCI* getDefaultSCI();
 		
-		/*! Gets the value of the variable 'nrOfChargingPorts' that is defined in the default interface scope. */
-		sc_integer get_nrOfChargingPorts();
+		/*! Gets the value of the variable 'NrOfChargingPorts' that is defined in the default interface scope. */
+		const sc_integer get_nrOfChargingPorts();
 		
-		/*! Gets the value of the variable 'samplingTime_ms' that is defined in the default interface scope. */
-		sc_integer get_samplingTime_ms();
+		/*! Gets the value of the variable 'SamplingTime_ms' that is defined in the default interface scope. */
+		const sc_integer get_samplingTime_ms();
+		
+		/*! Gets the value of the variable 'AccuStateUndef' that is defined in the default interface scope. */
+		const sc_integer get_accuStateUndef();
+		
+		/*! Gets the value of the variable 'AccuStateFull' that is defined in the default interface scope. */
+		const sc_integer get_accuStateFull();
+		
+		/*! Gets the value of the variable 'AccuStateRun' that is defined in the default interface scope. */
+		const sc_integer get_accuStateRun();
 		
 		/*! Checks if the out event 'chargingPortEnable' that is defined in the default interface scope has been raised. */
 		sc_boolean isRaised_chargingPortEnable();
@@ -115,17 +125,11 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 		/*! Gets the value of the out event 'chargingPortDisable' that is defined in the default interface scope. */
 		sc_integer get_chargingPortDisable_value();
 		
-		/*! Checks if the out event 'chargedPortsUpdate' that is defined in the default interface scope has been raised. */
-		sc_boolean isRaised_chargedPortsUpdate();
+		/*! Checks if the out event 'accuStateUpdate' that is defined in the default interface scope has been raised. */
+		sc_boolean isRaised_accuStateUpdate();
 		
-		/*! Gets the value of the out event 'chargedPortsUpdate' that is defined in the default interface scope. */
-		sc_integer get_chargedPortsUpdate_value();
-		
-		/*! Checks if the out event 'preChargeUpdate' that is defined in the default interface scope has been raised. */
-		sc_boolean isRaised_preChargeUpdate();
-		
-		/*! Gets the value of the out event 'preChargeUpdate' that is defined in the default interface scope. */
-		sc_boolean get_preChargeUpdate_value();
+		/*! Gets the value of the out event 'accuStateUpdate' that is defined in the default interface scope. */
+		sc_integer get_accuStateUpdate_value();
 		
 		/*! Gets the value of the variable 'chargingCurrent_raw' that is defined in the default interface scope. */
 		sc_integer get_chargingCurrent_raw();
@@ -133,11 +137,8 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 		/*! Sets the value of the variable 'chargingCurrent_raw' that is defined in the default interface scope. */
 		void set_chargingCurrent_raw(sc_integer value);
 		
-		/*! Gets the value of the variable 'preChargeVoltage_raw' that is defined in the default interface scope. */
-		sc_integer get_preChargeVoltage_raw();
-		
-		/*! Sets the value of the variable 'preChargeVoltage_raw' that is defined in the default interface scope. */
-		void set_preChargeVoltage_raw(sc_integer value);
+		/*! Gets the value of the variable 'accuState' that is defined in the default interface scope. */
+		sc_integer get_accuState();
 		
 		
 		//! Inner class for internal interface scope operation callbacks.
@@ -196,12 +197,6 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 				/*! Sets the value of the variable 'chargingCurrent_filtered_raw' that is defined in the internal scope. */
 				void set_chargingCurrent_filtered_raw(sc_real value);
 				
-				/*! Gets the value of the variable 'preChargingPinOn' that is defined in the internal scope. */
-				sc_boolean get_preChargingPinOn();
-				
-				/*! Sets the value of the variable 'preChargingPinOn' that is defined in the internal scope. */
-				void set_preChargingPinOn(sc_boolean value);
-				
 				/*! Gets the value of the variable 'a' that is defined in the internal scope. */
 				sc_real get_a();
 				
@@ -214,25 +209,17 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 				/*! Sets the value of the variable 'chargingTime_s' that is defined in the internal scope. */
 				void set_chargingTime_s(sc_integer value);
 				
-				/*! Gets the value of the variable 'chargedPorts' that is defined in the internal scope. */
-				sc_integer get_chargedPorts();
-				
-				/*! Sets the value of the variable 'chargedPorts' that is defined in the internal scope. */
-				void set_chargedPorts(sc_integer value);
-				
 				
 			private:
 				friend class StateMachine;
 				sc_integer actualChargingPort;
 				sc_real chargingCurrent_filtered_raw;
-				sc_boolean preChargingPinOn;
 				sc_real a;
 				sc_integer chargingTime_s;
-				sc_integer chargedPorts;
 		};
 	
 		//! the maximum number of orthogonal states defines the dimension of the state configuration vector.
-		static const sc_integer maxOrthogonalStates = 3;
+		static const sc_integer maxOrthogonalStates = 2;
 		
 		//! number of time events used by the state machine.
 		static const sc_integer timeEventsCount = 3;
@@ -250,13 +237,13 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 		
 		void react_filter();
 		void react_off();
-		void react_charging();
 		void react_endOfCharging();
-		void react_preCharge();
+		void react_charging_running();
 		void react__choice0_();
 		void react_react__choice0_();
 		void react__choice1_();
 		void react__choice2_();
+		void react__choice3_();
 		void clearInEvents();
 		void clearOutEvents();
 		

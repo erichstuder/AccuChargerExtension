@@ -1,43 +1,98 @@
-//#define int long
-
 #include "yakindu/AccuChargerExtensionSM/generated_code/StateMachine.cpp"
 #include "YakinduManualStatechartTimer.h"
 
-//#include "MemoryFree.h" 
-
+#include <LiquidCrystal.h>
 
 /*
 TODOs
 - abklären, wie das mit NULL und null genau läuft. Wert? NULL oder null?
   - Timer_Counter1.cpp prüfung auf Null-Pointer bei den Callbacks
-- Tasking so machen, das es exakt z.B. 5ms beträgt.
 - nach ca. 1h soll der nächste Akku geladen werden. Datatype grösse 16bit lässt nur etwa 30s zu. Was hat leonardo?
-
 */
 
 //sc_integer samplingtime_ms = 5;
 #define RELAY_ENABLE LOW
 #define RELAY_DISABLE HIGH
-const int relayPinNumbers[] = {9,2,3,4,5,6,7,8};//pin 1 is used by serial communication //9 kommt als erstes weil ich keine Lust hatte zum Umstecken auf dem Board nachdem pin 1 wegfiel
+const int relayPinNumbers[] = {2,3,4,5}; //{9,2,3,4,5,6,7,8};//pin 1 is used by serial communication //9 kommt als erstes weil ich keine Lust hatte zum Umstecken auf dem Board nachdem pin 1 wegfiel
 const int chargingCurrentPin = A0;
 const int preChargeVoltagePin = A1;
-const int preChargeSwitchPin = 10; 
+//const int preChargeSwitchPin = 10; 
 
 StateMachine* stateMachine;
 StateMachine::DefaultSCI* sciInterface;
 YakinduManualStatechartTimer* timer;
-sc_integer chargedPorts;
+sc_integer accuState;
 
-void setup() {
-  // setup serial
-//  Serial1.begin(9600);
-  //while (!Serial) {
-    //; // wait for serial port to connect. Needed for native USB
-  //}
+LiquidCrystal lcd(12, 11, 9, 8, 7, 6);
 
+void printLCD(int chargingPortNr, int accuState)
+{
+    char* stateText = "";
+
+    if(accuState == stateMachine->get_accuStateUndef())
+    {
+      stateText = "undef"; 
+    }
+    else if(accuState == stateMachine->get_accuStateFull())
+    {
+      stateText = "full"; 
+    }
+    else if(accuState == stateMachine->get_accuStateRun())
+    {
+      stateText = "run"; 
+    } 
+    else
+    {
+      //should never happen
+      stateText = "????"; 
+    } 
+
+    switch(chargingPortNr)
+    {
+      case 0:
+        lcd.setCursor(0, 0);
+        lcd.print("        ");
+        lcd.setCursor(0, 0);
+        lcd.print("0:");
+        break;
+      case 1:
+        lcd.setCursor(8, 0);
+        lcd.print("        ");
+        lcd.setCursor(8, 0);
+        lcd.print("1:");
+        break;
+      case 2:
+        lcd.setCursor(0, 1);
+        lcd.print("        ");
+        lcd.setCursor(0, 1);
+        lcd.print("2:");
+        break;
+      case 3:
+        lcd.setCursor(8, 1);
+        lcd.print("        ");
+        lcd.setCursor(8, 1);
+        lcd.print("3:");
+        break;
+      default:
+        break;  
+    }
+    lcd.print(stateText);
+}
+
+void setup(){
+  //power for the display
+  pinMode(10, OUTPUT);
+  digitalWrite(10, HIGH);
+  delay(1000);
+
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  printLCD(0, stateMachine->get_accuStateUndef());
+  printLCD(1, stateMachine->get_accuStateUndef());
+  printLCD(2, stateMachine->get_accuStateUndef());
+  printLCD(3, stateMachine->get_accuStateUndef());
 
   //
-  chargedPorts = 0;
   stateMachine = new StateMachine();
   stateMachine->init(); //initializes variables (e.g. samplingTime)
   timer = new YakinduManualStatechartTimer(stateMachine->get_samplingTime_ms());
@@ -52,21 +107,7 @@ void setup() {
   setupTimer();
 }
 
-void loop() {
-  if(Serial){
-    Serial.println("-");
-    Serial.println(String(chargedPorts));
-  }
-  sc_integer temp = chargedPorts;
-  for(int n=0; n<16; n++){
-    if((temp & 0x01) && Serial){
-      Serial.print("port ");
-      Serial.print(String(n));
-      Serial.println(" : full");
-    }
-    temp >>= 1;
-  } 
-  delay(1000);//1s
+void loop(){
 }
 
 void setupTimer(){
@@ -79,7 +120,6 @@ void setupTimer(){
 ISR(TIMER1_COMPA_vect){
   timer->runCycle();
   stateMachine->set_chargingCurrent_raw(analogRead(chargingCurrentPin));
-  stateMachine->set_preChargeVoltage_raw(analogRead(preChargeVoltagePin));
   stateMachine->runCycle();
   
   sc_integer value;
@@ -103,20 +143,61 @@ ISR(TIMER1_COMPA_vect){
     }
   }
   
-  if( stateMachine->isRaised_chargedPortsUpdate()){
-    chargedPorts = stateMachine->get_chargedPortsUpdate_value();
+  if( stateMachine->isRaised_accuStateUpdate()){
+    sc_integer chargingPortNr = stateMachine->get_accuStateUpdate_value();
+    sc_integer accuState = stateMachine->get_accuState();//this is not very clean but i found no other possibility to hand over this information.
+    
+    printLCD(chargingPortNr, accuState);
+//    
+//    char* stateText = "";
+//
+//    if(accuState == stateMachine->get_accuStateUndef())
+//    {
+//      stateText = "undef"; 
+//    }
+//    else if(accuState == stateMachine->get_accuStateFull())
+//    {
+//      stateText = "full"; 
+//    }
+//    else if(accuState == stateMachine->get_accuStateRun())
+//    {
+//      stateText = "run"; 
+//    } 
+//    else
+//    {
+//      //should never happen
+//      stateText = "????"; 
+//    } 
+//
+//    switch(chargingPortNr)
+//    {
+//      case 0:
+//        lcd.setCursor(0, 0);
+//        lcd.print("        ");
+//        lcd.setCursor(0, 0);
+//        lcd.print("0:");
+//        break;
+//      case 1:
+//        lcd.setCursor(8, 0);
+//        lcd.print("        ");
+//        lcd.setCursor(8, 0);
+//        lcd.print("1:");
+//        break;
+//      case 2:
+//        lcd.setCursor(0, 1);
+//        lcd.print("        ");
+//        lcd.setCursor(0, 1);
+//        lcd.print("2:");
+//        break;
+//      case 3:
+//        lcd.setCursor(8, 1);
+//        lcd.print("        ");
+//        lcd.setCursor(8, 1);
+//        lcd.print("3:");
+//        break;
+//      default:
+//        break;  
+//    }
+//    lcd.print(stateText);
   }
-  
-  if( stateMachine->isRaised_preChargeUpdate()){
-    if( stateMachine->get_preChargeUpdate_value() == true){
-      digitalWrite(preChargeSwitchPin, 1);
-    }else{
-      digitalWrite(preChargeSwitchPin, 0);
-    }
-  }
-  
-
-  
-  //TODO: make it dependant of the samplingTime.
-  //delay(stateMachine->get_samplingTime_ms());
 }
