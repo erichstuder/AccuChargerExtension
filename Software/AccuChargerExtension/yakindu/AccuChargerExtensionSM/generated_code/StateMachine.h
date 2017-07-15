@@ -49,6 +49,9 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 				/*! Gets the value of the variable 'AccuStateRun' that is defined in the default interface scope. */
 				const sc_integer get_accuStateRun();
 				
+				/*! Gets the value of the variable 'AccuStateInit' that is defined in the default interface scope. */
+				const sc_integer get_accuStateInit();
+				
 				/*! Checks if the out event 'chargingPortEnable' that is defined in the default interface scope has been raised. */
 				sc_boolean isRaised_chargingPortEnable();
 				
@@ -84,6 +87,7 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 				static const sc_integer AccuStateUndef;
 				static const sc_integer AccuStateFull;
 				static const sc_integer AccuStateRun;
+				static const sc_integer AccuStateInit;
 				sc_boolean chargingPortEnable_raised;
 				sc_integer chargingPortEnable_value;
 				sc_boolean chargingPortDisable_raised;
@@ -112,6 +116,9 @@ class StateMachine : public TimedStatemachineInterface, public StatemachineInter
 		
 		/*! Gets the value of the variable 'AccuStateRun' that is defined in the default interface scope. */
 		const sc_integer get_accuStateRun();
+		
+		/*! Gets the value of the variable 'AccuStateInit' that is defined in the default interface scope. */
+		const sc_integer get_accuStateInit();
 		
 		/*! Checks if the out event 'chargingPortEnable' that is defined in the default interface scope has been raised. */
 		sc_boolean isRaised_chargingPortEnable();

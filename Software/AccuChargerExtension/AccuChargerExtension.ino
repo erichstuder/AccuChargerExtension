@@ -40,6 +40,10 @@ void printLCD(int chargingPortNr, int accuState)
     else if(accuState == stateMachine->get_accuStateRun())
     {
       stateText = "run"; 
+    }
+    else if(accuState == stateMachine->get_accuStateInit())
+    {
+      stateText = ""; 
     } 
     else
     {
@@ -87,10 +91,10 @@ void setup(){
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-  printLCD(0, stateMachine->get_accuStateUndef());
-  printLCD(1, stateMachine->get_accuStateUndef());
-  printLCD(2, stateMachine->get_accuStateUndef());
-  printLCD(3, stateMachine->get_accuStateUndef());
+  printLCD(0, stateMachine->get_accuStateInit());
+  printLCD(1, stateMachine->get_accuStateInit());
+  printLCD(2, stateMachine->get_accuStateInit());
+  printLCD(3, stateMachine->get_accuStateInit());
 
   //
   stateMachine = new StateMachine();

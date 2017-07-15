@@ -20,9 +20,10 @@ StateMachine::~StateMachine()
 
 const sc_integer StateMachine::DefaultSCI::NrOfChargingPorts = 4;
 const sc_integer StateMachine::DefaultSCI::SamplingTime_ms = 5;
-const sc_integer StateMachine::DefaultSCI::AccuStateUndef = 8;
+const sc_integer StateMachine::DefaultSCI::AccuStateUndef = 0;
 const sc_integer StateMachine::DefaultSCI::AccuStateFull = 1;
 const sc_integer StateMachine::DefaultSCI::AccuStateRun = 2;
+const sc_integer StateMachine::DefaultSCI::AccuStateInit = 3;
 
 
 void StateMachine::init()
@@ -330,6 +331,16 @@ const sc_integer StateMachine::DefaultSCI::get_accuStateRun()
 const sc_integer StateMachine::get_accuStateRun()
 {
 	return StateMachine::DefaultSCI::AccuStateRun;
+}
+
+const sc_integer StateMachine::DefaultSCI::get_accuStateInit()
+{
+	return AccuStateInit;
+}
+
+const sc_integer StateMachine::get_accuStateInit()
+{
+	return StateMachine::DefaultSCI::AccuStateInit;
 }
 
 sc_integer StateMachine::DefaultSCI::get_chargingCurrent_raw()
